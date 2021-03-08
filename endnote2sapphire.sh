@@ -3,15 +3,22 @@
 # It does two main things: (1) fixes the Dates, and (2) truncates the author address to max 255 characters
 #
 # # Dates
-# NHMRC Sapphire can import XML files from Endnote, but it will only parse the date correctly if it's of the form DD-MMM-YYYY (https://healthandmedicalresearch.gov.au/data.html?data=endnote)
+# NHMRC Sapphire can import XML files from Endnote, but it will only parse the date correctly if it's of the 
+# form DD-MMM-YYYY (https://healthandmedicalresearch.gov.au/data.html?data=endnote)
 # Unfotunately, Endnote X9 records only "Mmm", "Mmm D" or "Mmm DD" in the Date field & the year is stored separately.
 # Endnote 20 also seems to have the same behaviour. I've only tested this on a mac, so YMMV on PC.
 #
 # # overly long authAddress:
-# A common warning when importing an Endnote XML is regarding overly long authAddress (>255 chars). The records are imported over-sized and then if you ever manually edit the record in Sapphire you'll be forced to shorten them. This utility truncates these to 255 characters. This script ensures that the record is at most 255 characters long, but since some special characters are escaped in the XML file (e.g. ' is &apos;), the final length in Sapphire may be shorter than 255 characters.
+# A common warning when importing an Endnote XML is regarding overly long authAddress (>255 chars). The records are 
+# imported over-sized and then if you ever manually edit the record in Sapphire you'll be forced to shorten them. 
+# This utility truncates these to 255 characters. This script ensures that the record is at most 255 characters long, 
+# but since some special characters are escaped in the XML file (e.g. ' is &apos;), the final length in Sapphire may 
+# be shorter than 255 characters.
 #
 # In Endnote you should:
-# 1. [optional] select citations and make sure the references are up-to-date, via "Find Reference Updates..." and 'update all fields'. This will sync with PubMed. Beyond updating the Year, Volume and Issue, this ensures that the author names are consistent Surname, A.B.C.
+# 1. [optional] select citations and make sure the references are up-to-date, via "Find Reference Updates..." and 
+#    'update all fields'. This will sync with PubMed. Beyond updating the Year, Volume and Issue, this ensures that 
+#    the author names are consistent Surname, A.B.C.
 # 2. Make sure the year field is filled in. This should be a 4-digit number & records without this will be not get updated.
 # 3. Export the references via File > Export > "File type: XML, Output Style: annotated"
 # 4. run this script on the XML, which will update it inline.
@@ -20,10 +27,11 @@
 # 6. import the XML: Profile > publications > import from endnote button
 # 7. carefully read the import warnings and errors. this script has no warranty!
 #    Common warnings included:
-#    * (2) same for overly long keywords sections.
-#    * (3), and if the page range is 125-8, then you'll get an 'end page is < start page' warning, but it still imports them ok & is still human readable.
+#    * (1) keywords sections > 500 characters
+#    * (2) if the page range is 125-8, then you'll get an 'end page is < start page' warning, but it still imports 
+#          them ok & is still human readable.
 #
-# usage: $endnote2sapphire.sh <exported_from_endnote.xml>
+# usage: endnote2sapphire.sh <exported_from_endnote.xml>
 #
 # TODO
 # * truncate keywords to 500 chars - need a clever way to sum the length of <keyword> tokens within their XML tags.
@@ -31,7 +39,7 @@
 # * fix page range (eg 123-9 to 123-129) - not much point as Sapphire warns, but otherwise handles this ok.
 # * make the address exactly 255 chars after the escaped characters are un-escapted in Sapphire - quite tricky, for very little benefit.
 #
-# Mark Cowley, 7/3/2021
+# Mark Cowley, 8/3/2021
 
 function usage () {
   echo >&2 "$0 references_exported_from_endnote.xml"
